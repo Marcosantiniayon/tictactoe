@@ -1,0 +1,63 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: rgb(86, 101, 119);
+    color: white;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.players {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.players label {
+    font-size: 1.2rem;
+}
+
+.players input {
+    margin-bottom: 10px;
+}
+
+.game-board {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.row {
+    display: flex;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#start-restart-btn {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    color: rgb(86, 101, 119);
+}
+
+#message {
+    font-size: 1.5rem;
+}
