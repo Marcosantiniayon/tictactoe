@@ -29,16 +29,45 @@ ppcCheckbox.addEventListener('change', () => {
     player2Input.disabled = false;
   }
 });
-
 // Change to results screen after a game has concluded
 resultBtn.addEventListener('click', () => {
   gameDisplayDiv.classList.add('hidden');
   gameResultDiv.classList.remove('hidden');
 });
-
 // Change back to player info screen after restart
-
 restartBtn.addEventListener('click', () => {
   gameResultDiv.classList.add('hidden');
   playerInfoDiv.classList.remove('hidden');
+});
+
+const Gameboard = (() => {
+  // Initialize board with default empty values
+  let board = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
+
+  const placeMark = (mark, index) => {
+    board[index] = mark;
+  };
+  const clearBoard = () => {
+    board = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
+  };
+  // gets the current state of the board
+  const getBoard = () => board;
+
+  return { placeMark, clearBoard, getBoard };
+})();
+
+const Players = () => {
+
+};
+
+const game = (() => {
+
+  // checkForWinnerFunction
+
+  // checkForTie Function
+
+});
+
+const displayController = (() => {
+
 });
