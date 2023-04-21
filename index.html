@@ -10,8 +10,16 @@
 <body>
     <h1>Tic Tac Toe</h1>
     <div class="player-info-div">
-        <p>player info</p>
-        <button id="start-btn">Start</button>
+        <form>
+            <label for="player1">Player 1 Name:</label>
+            <input type="text" id="player1" name="player1" required><br><br>
+            <label for="player2">Player 2 Name:</label>
+            <input type="text" id="player2" name="player2" required><br><br>
+            <label for="ppc">Player 2 vs. PC?</label>
+            <input type="checkbox" id="ppc" name="ppc"><br><br>
+            <input id="start-btn" type="submit" value="Start">
+        </form>
+        <!-- <button id="start-btn">Start</button> -->
     </div>
     <div class="game-display-div hidden">
         <p>game display</p>
