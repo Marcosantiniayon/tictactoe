@@ -10,7 +10,7 @@
 <body>
     <h1>Tic Tac Toe</h1>
     <div class="player-info-div">
-        <form>
+        <form id="player-form">
             <label for="player1">Player 1 Name:</label>
             <input type="text" id="player1" name="player1" required><br><br>
             <label for="player2">Player 2 Name:</label>
@@ -22,7 +22,17 @@
         <!-- <button id="start-btn">Start</button> -->
     </div>
     <div class="game-display-div hidden">
-        <p>game display</p>
+        <div class="game-board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+          </div>
         <button id="result-btn">Results</button>
     </div>
     <div class="game-result-div hidden">
