@@ -1,18 +1,19 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable max-len */
 
 const gameBoard = (() => {
   // Initialize board with default empty values
-  let board = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
+  let board = ['', '', '', '', '', '', '', '', ''];
 
   const setMark = (index, mark) => {
-    if (board[index] === null) {
+    if (board[index] === '') {
       board[index] = mark;
       return true;
     }
     return false;
   };
   const reset = () => {
-    board = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
+    board = ['', '', '', '', '', '', '', '', ''];
   };
   // gets the current state of the board
   const getBoard = () => board;
@@ -51,9 +52,7 @@ const gameController = (() => {
     return winningCombinations.some((combo) => combo.every((position) => board[position] === currentPlayer.getSymbol()));
   };
 
-  const checkTie = () => {
-    gameBoard.getBoard().every((cell) => cell !== null);
-  };
+  const checkTie = () => gameBoard.getBoard().every((cell) => cell !== '');
 
   const playTurn = (index) => {
     if (gameBoard.setMark(index, currentPlayer.getSymbol())) {
@@ -68,29 +67,109 @@ const gameController = (() => {
     return null;
   };
 
-  const start = (player1Name, player2Name) => {
+  let isPCPlayer2 = false;
+
+  const isPCPlayer2Active = () => isPCPlayer2;
+
+  const generatePCMove = () => {
+    const minimax = (board, depth, isMaximizing) => {
+      const winner = checkWinnerForBoard(board);
+      if (winner !== null) {
+        return winner === player1.getSymbol() ? -1 : 1;
+      }
+
+      if (checkTieForBoard(board)) {
+        return 0;
+      }
+
+      const currentPlayer = isMaximizing ? player2 : player1;
+      let bestScore = isMaximizing ? -Infinity : Infinity;
+
+      for (let i = 0; i < board.length; i++) {
+        if (board[i] === '') {
+          const newBoard = [...board];
+          newBoard[i] = currentPlayer.getSymbol();
+          const score = minimax(newBoard, depth + 1, !isMaximizing);
+
+          if (isMaximizing) {
+            bestScore = Math.max(bestScore, score);
+          } else {
+            bestScore = Math.min(bestScore, score);
+          }
+        }
+      }
+
+      return bestScore;
+    };
+
+    const checkWinnerForBoard = (board) => {
+      const winningCombinations = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6],
+      ];
+
+      for (const combo of winningCombinations) {
+        if (
+          board[combo[0]] !== ''
+          && board[combo[0]] === board[combo[1]]
+          && board[combo[0]] === board[combo[2]]
+        ) {
+          return board[combo[0]];
+        }
+      }
+
+      return null;
+    };
+
+    const checkTieForBoard = (board) => board.every((cell) => cell !== '');
+
+    let bestScore = -Infinity;
+    let bestMove = -1;
+
+    for (let i = 0; i < gameBoard.getBoard().length; i++) {
+      if (gameBoard.getBoard()[i] === '') {
+        const newBoard = [...gameBoard.getBoard()];
+        newBoard[i] = player2.getSymbol();
+        const score = minimax(newBoard, 0, false);
+        if (score > bestScore) {
+          bestScore = score;
+          bestMove = i;
+        }
+      }
+    }
+
+    return bestMove;
+  };
+
+  const getCurrentPlayer = () => currentPlayer;
+
+  const start = (player1Name, player2Name, pcPlayer2) => {
     player1 = playerFactory(player1Name, 'X');
     player2 = playerFactory(player2Name, 'O');
     currentPlayer = player1;
     gameBoard.reset();
+    isPCPlayer2 = pcPlayer2;
   };
 
-  return { playTurn, start };
-});
+  return {
+    playTurn, start, isPCPlayer2Active, generatePCMove, getCurrentPlayer,
+  };
+})();
 
-const displayController = (() => {
+const displayController = () => {
   const playerInfoDiv = document.querySelector('.player-info-div');
   const gameDisplayDiv = document.querySelector('.game-display-div');
   const gameResultDiv = document.querySelector('.game-result-div');
-  const resultBtn = document.getElementById('result-btn');
   const restartBtn = document.getElementById('restart-btn');
   const form = document.querySelector('form');
-  const gameBoardDiv = document.getElementById('game-board');
+  const resultDisplay = document.getElementById('result');
   const player1Input = document.querySelector('#player1');
   const player2Input = document.querySelector('#player2');
-  const ppcCheckbox = document.querySelector('#ppc');
-  let player1 = '';
-  let player2 = 'PC';
+  const ppcCheckbox = document.querySelector('#ppcChckbx');
+  const ppcImg = document.getElementById('ppcImg');
+  let player1Name = '';
+  let player2Name = '';
 
   const render = () => {
     const board = gameBoard.getBoard();
@@ -104,6 +183,26 @@ const displayController = (() => {
     // Call the playTurn function from the gameController module and update the game board
     const result = gameController.playTurn(index);
     render();
+
+    // Check the result and display the winner or the tie message
+    if (result) {
+      if (result.winner) {
+        console.log(`Winner: ${result.winner}`);
+        gameDisplayDiv.classList.add('hidden');
+        gameResultDiv.classList.remove('hidden');
+        resultDisplay.textContent = `Winner: ${result.winner}`;
+      } else if (result.tie) {
+        console.log("It's a tie!");
+        gameDisplayDiv.classList.add('hidden');
+        gameResultDiv.classList.remove('hidden');
+        resultDisplay.textContent = "It's a tie!";
+      }
+    } else if (gameController.isPCPlayer2Active() && gameController.getCurrentPlayer().getName() === player2Name) {
+      setTimeout(() => {
+        const pcMoveIndex = gameController.generatePCMove();
+        handleCellClick(pcMoveIndex);
+      }, 500); // Add a delay before the PC makes a move
+    }
   };
 
   const init = () => {
@@ -111,42 +210,48 @@ const displayController = (() => {
     form.addEventListener('submit', (event) => {
       event.preventDefault();
 
-      player1 = player1Input.value;
-      playerFactory(player1, 'X');
-      player2 = player2Input.value;
-      playerFactory(player2, 'O');
+      player1Name = player1Input.value;
+      playerFactory(player1Name, 'X');
+      player2Name = player2Input.value;
+      playerFactory(player2Name, 'O');
 
       const ppc = ppcCheckbox.checked;
 
-      console.log(player1, player2, ppc);
+      console.log(player1Name, player2Name, ppc);
 
-      // Start the game with the given player names
-      gameController.start(player1, player2);
+      // Start the game with the given player names and ppc value
+      gameController.start(player1Name, player2Name, ppc);
 
       // Change to game display screen after players start
       playerInfoDiv.classList.add('hidden');
       gameDisplayDiv.classList.remove('hidden');
+
+      // Trigger the PC's turn if Player 2 is a PC and it's their turn
+      if (gameController.isPCPlayer2Active() && gameController.getCurrentPlayer() === player2) {
+        const pcMoveIndex = gameController.generatePCMove();
+        handleCellClick(pcMoveIndex);
+      }
     });
     // Listens to PC toggle. Disable Player 2 name if Player 2 is pc
     ppcCheckbox.addEventListener('change', () => {
       if (ppcCheckbox.checked) {
         player2Input.value = 'PC';
         player2Input.disabled = true;
+        ppcImg.classList.add('ppcOn');
       } else {
         player2Input.disabled = false;
+        ppcImg.classList.remove('ppcOn');
+        player2Name.value = '';
       }
-    });
-    // Change to results screen after a game has concluded
-    resultBtn.addEventListener('click', () => {
-      gameDisplayDiv.classList.add('hidden');
-      gameResultDiv.classList.remove('hidden');
     });
     // Change back to player info screen after restart
     restartBtn.addEventListener('click', () => {
       gameResultDiv.classList.add('hidden');
       playerInfoDiv.classList.remove('hidden');
+      gameBoard.reset();
+      render();
     });
-    // Add click event listeners to the cell elements
+    // Add click event listeners to the cell elementsx
     const cells = document.querySelectorAll('.cell');
     cells.forEach((cell) => {
       cell.addEventListener('click', () => {
@@ -156,7 +261,7 @@ const displayController = (() => {
     });
   };
 
-  return init;
-});
+  return { init };
+};
 
-displayController();
+displayController().init();
