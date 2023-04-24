@@ -16,8 +16,10 @@ body{
 }
 
 h1{
-  color: #9074ff;
+  color: #ffc600;
   font-size: 4REM;
+  text-shadow: -1px 0 #fcd95c, 0 1px #fcd95c, 1px 0 #fcd95c, 0 -1px #fcd95c; /* Add an outline to the h1 element */
+
 }
 
 h2{
@@ -95,15 +97,24 @@ p {
 
 #ppcImg{
   padding:14px;
-  border: 2px solid rgba(255, 77, 0, 1);
+  border: 2px solid rgb(255, 140, 0);
   border-radius: 44px;
   width: 10%;
-  background-color: rgba(255, 77, 0, 0.5);
+  background-color: rgba(255, 140, 0, 0.5);
+  transition: transform 0.5s; /* Add a smooth transition for the transform property */
+}
+
+#ppcImg:hover{
+  background-color: rgb(255, 140, 0);
 }
 
 .ppcOn{
-  border: 2px solid rgba(0, 255, 179, 1) !important;;
-  background-color: rgba(0, 255, 179, 0.5) !important;
+  border: 2px solid rgb(184, 220, 2) !important;;
+  background-color: rgba(184, 220, 0, 0.5) !important;
+}
+
+.ppcOn:hover{
+  background-color: rgba(184, 220, 0 ) !important;
 }
 
 .game-board {

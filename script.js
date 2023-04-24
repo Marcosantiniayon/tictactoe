@@ -239,10 +239,20 @@ const displayController = () => {
         player2Input.disabled = true;
         ppcImg.classList.add('ppcOn');
       } else {
+        player2Input.value = '';
         player2Input.disabled = false;
         ppcImg.classList.remove('ppcOn');
-        player2Name.value = '';
       }
+    });
+    let rotationDegree = 0;
+    ppcImg.addEventListener('click', () => {
+      rotationDegree += 720; // Increase the rotation degree by 360 each click
+      ppcImg.style.transform = `rotate(${rotationDegree}deg)`; // Apply the rotation to the element
+
+      // Optional: remove the rotation class after the animation is done
+      setTimeout(() => {
+        ppcImg.classList.remove('rotate');
+      }, 500); // The duration of the animation (in this case, 0.5s or 500ms)
     });
     // Change back to player info screen after restart
     restartBtn.addEventListener('click', () => {
