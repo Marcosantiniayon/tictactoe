@@ -168,6 +168,7 @@ const displayController = () => {
   const player2Input = document.querySelector('#player2');
   const ppcCheckbox = document.querySelector('#ppcChckbx');
   const ppcImg = document.getElementById('ppcImg');
+  const result = document.getElementById('result');
   let player1Name = '';
   let player2Name = '';
 
@@ -186,17 +187,32 @@ const displayController = () => {
 
     // Check the result and display the winner or the tie message
     if (result) {
+      gameDisplayDiv.classList.add('fade-out');
+
+      setTimeout(() => {
+        gameDisplayDiv.classList.add('hidden');
+        gameDisplayDiv.classList.remove('fade-out');
+
+        // Show the gameResultDiv and add the fade-in class
+        gameResultDiv.classList.remove('hidden');
+        gameResultDiv.classList.add('fade-in');
+
+        setTimeout(() => {
+          // Remove the fade-in class after the animation is done
+          gameResultDiv.classList.remove('fade-in');
+        }, 500);
+      }, 500);
       if (result.winner) {
         console.log(`Winner: ${result.winner}`);
-        gameDisplayDiv.classList.add('hidden');
-        gameResultDiv.classList.remove('hidden');
         resultDisplay.textContent = `Winner: ${result.winner}`;
       } else if (result.tie) {
         console.log("It's a tie!");
-        gameDisplayDiv.classList.add('hidden');
-        gameResultDiv.classList.remove('hidden');
         resultDisplay.textContent = "It's a tie!";
       }
+      resultDisplay.classList.add('zoom-in');
+      setTimeout(() => {
+        resultDisplay.classList.remove('zoom-in');
+      }, 1500);
     } else if (gameController.isPCPlayer2Active() && gameController.getCurrentPlayer().getName() === player2Name) {
       setTimeout(() => {
         const pcMoveIndex = gameController.generatePCMove();
@@ -222,15 +238,23 @@ const displayController = () => {
       // Start the game with the given player names and ppc value
       gameController.start(player1Name, player2Name, ppc);
 
-      // Change to game display screen after players start
-      playerInfoDiv.classList.add('hidden');
-      gameDisplayDiv.classList.remove('hidden');
+      // Add the fade-out class to the player info div
+      playerInfoDiv.classList.add('fade-out');
 
-      // Trigger the PC's turn if Player 2 is a PC and it's their turn
-      if (gameController.isPCPlayer2Active() && gameController.getCurrentPlayer() === player2) {
-        const pcMoveIndex = gameController.generatePCMove();
-        handleCellClick(pcMoveIndex);
-      }
+      // Wait for the fade-out animation to complete before showing the game display div
+      setTimeout(() => {
+        playerInfoDiv.classList.add('hidden');
+        playerInfoDiv.classList.remove('fade-out');
+
+        // Show the gameDisplayDiv and add the fade-in class
+        gameDisplayDiv.classList.remove('hidden');
+        gameDisplayDiv.classList.add('fade-in');
+
+        setTimeout(() => {
+          // Remove the fade-in class after the animation is done
+          gameDisplayDiv.classList.remove('fade-in');
+        }, 500);
+      }, 500);
     });
     // Listens to PC toggle. Disable Player 2 name if Player 2 is pc
     ppcCheckbox.addEventListener('change', () => {
@@ -256,8 +280,16 @@ const displayController = () => {
     });
     // Change back to player info screen after restart
     restartBtn.addEventListener('click', () => {
-      gameResultDiv.classList.add('hidden');
-      playerInfoDiv.classList.remove('hidden');
+      gameResultDiv.classList.add('fade-out');
+      setTimeout(() => {
+        gameResultDiv.classList.add('hidden');
+        gameResultDiv.classList.remove('fade-out');
+        playerInfoDiv.classList.remove('hidden');
+        playerInfoDiv.classList.add('fade-in');
+        setTimeout(() => {
+          playerInfoDiv.classList.remove('fade-in');
+        }, 700);
+      }, 700);
       gameBoard.reset();
       render();
     });

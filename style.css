@@ -18,12 +18,15 @@ body{
 h1{
   color: #ffc600;
   font-size: 4REM;
-  text-shadow: -1px 0 #fcd95c, 0 1px #fcd95c, 1px 0 #fcd95c, 0 -1px #fcd95c; /* Add an outline to the h1 element */
-
+  /* text-shadow: -1px 0 #fcd95c, 0 1px #fcd95c, 1px 0 #fcd95c, 0 -1px #fcd95c; Add an outline to the h1 element */
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
 }
 
 h2{
-font-size: 2REM;
+font-size: 5REM;
+font-family: 'Orbitron', sans-serif;
+font-weight: 400;
 }
 
 h2, p, label {
@@ -45,6 +48,8 @@ p {
   background-color: #323bae;
   color: white;
   border: 2px solid #282430;
+  width: 90px;
+  height: 30px;
 }
 
 #start-btn:hover, button:hover {
@@ -93,6 +98,7 @@ p {
 
 .hidden{
   display: none;
+  opacity: 0;
 }
 
 #ppcImg{
@@ -145,4 +151,32 @@ p {
 
 .cell:hover {
   background-color: #5c62af;
+}
+
+/* Result Effect */
+@keyframes zoom-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.zoom-in {
+  animation: zoom-in 1.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Screen Fade effect */
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.fade-in {
+  opacity: 1;
+  transition: opacity 0.5s;
 }
